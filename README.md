@@ -81,7 +81,7 @@ cd talentflow
 npm install
 npm run dev
 ```
-Access the app at `https://talent-flow-entnt-zeta.vercel.app/`.
+Access the app at (https://talent-flow-entnt-zeta.vercel.app/).
 
 ### Seed Data
 On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments to test all features with realistic data.
@@ -97,12 +97,9 @@ On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments t
 | Tailwind CSS | ![Tailwind](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg) |
 | MSW        | ![MSW](https://raw.githubusercontent.com/mswjs/media/main/logo.png) |
 | IndexedDB  | ![IndexedDB](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/IndexedDB_logo.svg/800px-IndexedDB_logo.svg.png) |
-| Lodash     | ![Lodash](https://raw.githubusercontent.com/devicons/devicon/master/icons/lodash/lodash-original.svg) |
-| date-fns   | ![date-fns](https://raw.githubusercontent.com/date-fns/date-fns/master/docs/logo.svg) |
 
 ---
 ## 📸 Screenshots
-> Replace with your actual screenshots
 
 **Dashboard**  
 
@@ -131,5 +128,4 @@ On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments t
 - **Notifications**: Real-time candidate updates.
 - **Analytics**: Charts and insights for hiring trends.
 - **Mobile Optimization**: Fully responsive design.
-- 
 ---
