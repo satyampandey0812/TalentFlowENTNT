@@ -6,7 +6,7 @@ import Dashboard from './pages/dashboard/dashboard';
 import Candidates from './pages/candidates/Candidates';
 import Assessment from './pages/assessments/Assessment';
 import JobDetail from "./pages/jobs/JobDetail";
-import CandidateDetail from "./pages/candidates/candidateDetail";
+import CandidateDetail from "./pages/candidates/CandidateD";
 import KanbanBoard from './components/candidates/KanbanBoard';
 import AssessmentForm from '../src/pages/assessments/AssessmentForm';
 
