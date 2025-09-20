@@ -24,6 +24,7 @@ function App() {
           <Route path='/assessments' element={<Assessment/>}/>
           <Route path="/jobs/:jobId/assessment" element={<Assessment />} />
           <Route path="/candidates/kanban" element={<KanbanBoard />} />
+          <Route path="*" element={<Dashboard />} />
           {/* ✅ FIX: Add a new route for the assessment form */}
           <Route path="/assessments/:assessmentId/take" element={<AssessmentForm />} />
         </Routes>
