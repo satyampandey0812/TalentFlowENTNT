@@ -95,7 +95,7 @@ On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments t
 | React      | ![React](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg) |
 | Vite       | ![Vite](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vite/vite-original.svg) |
 | Tailwind CSS | ![Tailwind](https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg) |
-| MSW        | ![MSW](https://mswjs.io/img/msw-logo.svg) |
+| MSW        | ![MSW](https://mswjs.io/_astro/msw.ChZQPzKa.svg) |
 | IndexedDB  | ![IndexedDB](https://upload.wikimedia.org/wikipedia/commons/f/f7/IndexedDB_logo.svg) |
 
 ---
