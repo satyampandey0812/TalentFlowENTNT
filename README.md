@@ -1,12 +1,112 @@
-# React + Vite
+# Talentflow: A Mini Hiring Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Talentflow** is a mini hiring platform designed to help HR teams manage jobs, candidates, and assessments. This project was developed as a front-end technical assignment and simulates a back-end API using **Mock Service Worker (MSW)**. All data is persisted locally using **IndexedDB**. The application is built with **React** and **Vite**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Features
 
-## Expanding the ESLint configuration
+### 1. Dashboard
+Provides a high-level overview of the hiring pipeline. Displays key metrics such as total jobs, total candidates, and assessments submitted.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 2. Jobs
+- **Jobs Board**: List jobs with server-like pagination and filtering by title, status, and tags.
+- **Job Management**: Create, edit, and archive jobs.
+- **Reordering**: Drag-and-drop interface with optimistic updates and rollback on failure.
+- **Deep Linking**: Unique URL for each job (`/jobs/:jobId`).
+
+### 3. Candidates
+- **Virtualized List**: Handles 1000+ seeded candidates. Supports client-side search and filtering by stage.
+- **Kanban Board**: Move candidates between stages with drag-and-drop.
+- **Candidate Profile**: Shows a timeline of status changes and allows notes with `@mentions`.
+
+### 4. Assessments
+- **Assessment Builder**: Build assessments with sections and questions.
+- **Live Preview**: Render assessments as fillable forms in real time.
+- **Form Runtime**: Supports validation rules (required, numeric range, max length) and conditional questions.
+
+---
+
+## 💻 Project Structure
+
+```
+/Talentflow
+├── node_modules/
+├── public/
+├── src/
+│   ├── assets/                # Static assets like images and fonts
+│   ├── components/            # Reusable components
+│   │   ├── assessments/
+│   │   ├── candidates/
+│   │   ├── common/
+│   │   ├── jobs/
+│   │   └── Navbar.jsx
+│   ├── pages/                 # Top-level route components
+│   │   ├── assessments/
+│   │   ├── candidates/
+│   │   ├── dashboard/
+│   │   └── jobs/
+│   ├── utils/                 # Utility functions and helpers
+│   ├── App.css
+│   ├── App.jsx                # Main app component
+│   ├── index.css
+│   └── main.jsx               # Entry point
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── README.md
+├── vercel.json
+└── vite.config.js
+```
+
+### Technical Decisions
+- **API Simulation**: **MSW** intercepts network requests to simulate a REST API for front-end development without a backend.
+- **Local Persistence**: Data stored in **IndexedDB** ensures state persists after page refresh.
+- **State Management**: Uses **React Context API** and **React Hooks** for centralized, easy-to-manage state.
+- **Folder Structure**: "By feature" folder organization ensures maintainability and scalability.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- npm 
+
+### Installation
+```bash
+git clone [repository-link]
+cd talentflow
+npm install
+npm run dev
+```
+Access the app at `https://talent-flow-entnt-zeta.vercel.app/`.
+
+### Seed Data
+On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments to test all features with realistic data.
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Icon |
+|------------|------|
+| React      | ![React](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg) |
+| Vite       | ![Vite](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vite/vite-original.svg) |
+| Tailwind CSS | ![Tailwind](https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg) |
+| MSW        | ![MSW](https://raw.githubusercontent.com/mswjs/media/main/logo.png) |
+| IndexedDB  | ![IndexedDB](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/IndexedDB_logo.svg/800px-IndexedDB_logo.svg.png) |
+| Lodash     | ![Lodash](https://raw.githubusercontent.com/devicons/devicon/master/icons/lodash/lodash-original.svg) |
+| date-fns   | ![date-fns](https://raw.githubusercontent.com/date-fns/date-fns/master/docs/logo.svg) |
+
+---
+
+## 🔮 Future Improvements
+- **Backend Integration**: Replace MSW with a real REST API or GraphQL server.
+- **Authentication**: Login/logout with role-based access.
+- **Notifications**: Real-time candidate updates.
+- **Analytics**: Charts and insights for hiring trends.
+- **Mobile Optimization**: Fully responsive design.
+- 
+---
