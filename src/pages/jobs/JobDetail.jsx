@@ -7,33 +7,43 @@ export default function JobDetail() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({ title: "", tags: "" });
+  const [formData, setFormData] = useState({
+    title: "",
+    tags: "",
+    description: "",
+    salaryRange: "",
+    experience: "",
+  });
+
+  // Move fetchJob OUTSIDE useEffect so it can be called by toggleArchive and handleSave
+  const fetchJob = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/jobs/${jobId}`);
+      if (!res.ok) throw new Error("Job not found");
+      const data = await res.json();
+      if (data.job) {
+        setJob(data.job);
+        setFormData({
+          title: data.job.title || "",
+          tags: data.job.tags ? data.job.tags.join(", ") : "",
+          description: data.job.description || "",
+          salaryRange: data.job.salaryRange || "",
+          experience: data.job.experience || "",
+        });
+      } else {
+        throw new Error("Invalid job data received");
+      }
+    } catch (err) {
+      setJob(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchJob = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/jobs/${jobId}`);
-        if (!res.ok) {
-          throw new Error("Job not found");
-        }
-        const data = await res.json();
-        if (data.job) {
-          setJob(data.job);
-          setFormData({
-            title: data.job.title,
-            tags: data.job.tags ? data.job.tags.join(", ") : "",
-          });
-        } else {
-          throw new Error("Invalid job data received");
-        }
-      } catch (err) {
-        setJob(null);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchJob();
+    // eslint-disable-next-line
   }, [jobId]);
 
   // ✅ ADDED: Function to save edited job details
@@ -45,6 +55,9 @@ export default function JobDetail() {
         body: JSON.stringify({
           title: formData.title,
           tags: formData.tags.split(",").map((t) => t.trim()),
+          description: formData.description,
+          salaryRange: formData.salaryRange,
+          experience: formData.experience,
         }),
       });
       if (res.ok) {
@@ -82,7 +95,8 @@ export default function JobDetail() {
   if (!job) return <div className="text-center p-8 text-red-500">Job not found</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8"
+    style={{backgroundColor:"#D4F1F4"}}>
       <div className="max-w-2xl mx-auto">
         <button
           type="button"
@@ -121,6 +135,13 @@ export default function JobDetail() {
                     <span className="text-gray-500 italic">No tags assigned</span>
                   )}
                 </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">Description</h3>
+                <p className="text-gray-700 whitespace-pre-line">
+                  {job.description ? job.description : <span className="text-gray-400 italic">No description provided.</span>}
+                </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 border-t pt-6">
@@ -177,6 +198,37 @@ export default function JobDetail() {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter job title"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 font-medium mb-2">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter job description"
+                rows={4}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 font-medium mb-2">Salary Range</label>
+              <input
+                type="text"
+                value={formData.salaryRange}
+                onChange={(e) => setFormData({ ...formData, salaryRange: e.target.value })}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g. $50,000 - $70,000"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 font-medium mb-2">Experience (years)</label>
+              <input
+                type="number"
+                value={formData.experience}
+                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g. 2"
+                min={0}
               />
             </div>
             <div className="mb-6">

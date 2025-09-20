@@ -8,6 +8,7 @@ import Assessment from './pages/assessments/Assessment';
 import JobDetail from "./pages/jobs/JobDetail";
 import CandidateDetail from "./pages/candidates/candidateDetail";
 import KanbanBoard from './components/candidates/KanbanBoard';
+import AssessmentForm from '../src/pages/assessments/AssessmentForm';
 
 function App() {
   return (
@@ -21,12 +22,14 @@ function App() {
           <Route path='/candidates' element={<Candidates/>}/>
           <Route path="/candidates/:candidateId" element={<CandidateDetail />} />
           <Route path='/assessments' element={<Assessment/>}/>
+          <Route path="/jobs/:jobId/assessment" element={<Assessment />} />
           <Route path="/candidates/kanban" element={<KanbanBoard />} />
-
+          {/* ✅ FIX: Add a new route for the assessment form */}
+          <Route path="/assessments/:assessmentId/take" element={<AssessmentForm />} />
         </Routes>
       </div>
     </>
   )
 }
 
-export default App
+export default App;

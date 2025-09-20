@@ -1,154 +1,167 @@
-// components/assessments/QuestionEditor.jsx
-import { useState } from 'react';
+// src/components/assessments/QuestionEditor.jsx
+import { useEffect } from 'react';
 
-// Change to default export
-const QuestionEditor = ({ question, index, onUpdate, onRemove, onMove }) => {
-  const [localQuestion, setLocalQuestion] = useState(question);
+export default function QuestionEditor({
+  question,
+  index,
+  onUpdate,
+  onRemove,
+  conditionalOptions = [],
+}) {
 
-  const handleChange = (field, value) => {
-    const updated = { ...localQuestion, [field]: value };
-    setLocalQuestion(updated);
-    onUpdate(updated);
-  };
-
-  const handleOptionChange = (optionIndex, value) => {
-    const newOptions = [...localQuestion.options];
-    newOptions[optionIndex] = value;
-    handleChange('options', newOptions);
-  };
+  // Update question type on change
+  useEffect(() => {
+    if (question.type.includes('choice')) {
+      onUpdate({ options: question.options.length ? question.options : ['', ''] });
+    } else {
+      onUpdate({ options: [] });
+    }
+  }, [question.type]);
 
   const addOption = () => {
-    handleChange('options', [...localQuestion.options, '']);
+    onUpdate({ options: [...question.options, ''] });
+  };
+
+  const updateOption = (optionIndex, value) => {
+    const newOptions = [...question.options];
+    newOptions[optionIndex] = value;
+    onUpdate({ options: newOptions });
   };
 
   const removeOption = (optionIndex) => {
-    const newOptions = localQuestion.options.filter((_, i) => i !== optionIndex);
-    handleChange('options', newOptions);
+    const newOptions = question.options.filter((_, i) => i !== optionIndex);
+    onUpdate({ options: newOptions });
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-gray-50">
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold">Q{index + 1}</span>
-          <span className="text-sm text-gray-500 capitalize">
-            ({localQuestion.type.replace('-', ' ')})
-          </span>
-        </div>
+    <div className="border rounded-lg p-4 bg-white shadow-sm">
+      <div className="flex justify-between items-center mb-2">
+        <h5 className="font-medium text-gray-700">Question {index + 1}</h5>
         <div className="flex space-x-2">
-          <button
-            onClick={() => onMove('up')}
-            disabled={index === 0}
-            className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-            title="Move up"
-          >
-            ↑
-          </button>
-          <button
-            onClick={() => onMove('down')}
-            disabled={index === question.totalQuestions - 1}
-            className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-            title="Move down"
-          >
-            ↓
-          </button>
-          <button
-            onClick={onRemove}
-            className="text-red-500 hover:text-red-700"
-            title="Remove question"
-          >
-            ×
-          </button>
+          <button onClick={onRemove} className="text-red-500 hover:text-red-700 text-sm">Remove</button>
         </div>
       </div>
-
+      
       <div className="mb-3">
-        <label className="block text-sm font-medium mb-1">Question Text</label>
+        <label className="block text-sm font-medium text-gray-700">Question Text</label>
         <input
           type="text"
-          value={localQuestion.text}
-          onChange={(e) => handleChange('text', e.target.value)}
-          placeholder="Enter your question here"
-          className="w-full border rounded px-3 py-2"
+          value={question.text}
+          onChange={(e) => onUpdate({ text: e.target.value })}
+          className="w-full border rounded px-3 py-2 mt-1"
+          placeholder="e.g., What is your favorite programming language?"
         />
       </div>
 
-      <div className="mb-3">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={localQuestion.required}
-            onChange={(e) => handleChange('required', e.target.checked)}
-            className="mr-2"
-          />
-          <span className="text-sm">Required question</span>
-        </label>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Type</label>
+          <select
+            value={question.type}
+            onChange={(e) => onUpdate({ type: e.target.value })}
+            className="w-full border rounded px-3 py-2 mt-1"
+          >
+            {/* Omitted question types for brevity - should be a prop */}
+          </select>
+        </div>
+        <div>
+          <label className="flex items-center text-sm font-medium text-gray-700 mt-1">
+            <input
+              type="checkbox"
+              checked={question.required}
+              onChange={(e) => onUpdate({ required: e.target.checked })}
+              className="mr-2"
+            />
+            Required
+          </label>
+        </div>
       </div>
 
-      {(localQuestion.type === 'single-choice' || localQuestion.type === 'multiple-choice') && (
-        <div className="mb-3">
-          <label className="block text-sm font-medium mb-2">Options</label>
-          {localQuestion.options.map((option, optionIndex) => (
-            <div key={optionIndex} className="flex items-center mb-2">
+      {(question.type === 'single-choice' || question.type === 'multiple-choice') && (
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700">Options</label>
+          {question.options.map((option, i) => (
+            <div key={i} className="flex items-center mt-2">
               <input
                 type="text"
                 value={option}
-                onChange={(e) => handleOptionChange(optionIndex, e.target.value)}
-                placeholder={`Option ${optionIndex + 1}`}
-                className="flex-1 border rounded px-3 py-1 mr-2"
+                onChange={(e) => updateOption(i, e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                placeholder={`Option ${i + 1}`}
               />
-              {localQuestion.options.length > 2 && (
-                <button
-                  onClick={() => removeOption(optionIndex)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  ×
-                </button>
-              )}
+              <button onClick={() => removeOption(i)} className="ml-2 text-red-500 hover:text-red-700">×</button>
             </div>
           ))}
-          <button
-            onClick={addOption}
-            className="text-sm text-blue-500 hover:text-blue-700"
-          >
-            + Add Option
-          </button>
+          <button onClick={addOption} className="mt-2 text-blue-500 hover:underline text-sm">Add Option</button>
         </div>
       )}
 
-      {localQuestion.type === 'numeric' && (
-        <div className="grid grid-cols-2 gap-3 mb-3">
+      {question.type === 'numeric' && (
+        <div className="grid grid-cols-2 gap-4 mt-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Minimum Value</label>
+            <label className="block text-sm font-medium text-gray-700">Min Value</label>
             <input
               type="number"
-              value={localQuestion.min || ''}
-              onChange={(e) => handleChange('min', parseInt(e.target.value) || 0)}
-              className="w-full border rounded px-3 py-2"
+              value={question.min}
+              onChange={(e) => onUpdate({ min: e.target.value })}
+              className="w-full border rounded px-3 py-2 mt-1"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Maximum Value</label>
+            <label className="block text-sm font-medium text-gray-700">Max Value</label>
             <input
               type="number"
-              value={localQuestion.max || ''}
-              onChange={(e) => handleChange('max', parseInt(e.target.value) || 100)}
-              className="w-full border rounded px-3 py-2"
+              value={question.max}
+              onChange={(e) => onUpdate({ max: e.target.value })}
+              className="w-full border rounded px-3 py-2 mt-1"
             />
           </div>
         </div>
       )}
 
-      {localQuestion.type === 'file' && (
-        <div className="mb-3">
-          <p className="text-sm text-gray-600">
-            File upload question. Candidates will be able to upload files when taking this assessment.
-          </p>
+      {question.type.includes('text') && (
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Min Length</label>
+            <input
+              type="number"
+              value={question.minLength}
+              onChange={(e) => onUpdate({ minLength: parseInt(e.target.value) })}
+              className="w-full border rounded px-3 py-2 mt-1"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Max Length</label>
+            <input
+              type="number"
+              value={question.maxLength}
+              onChange={(e) => onUpdate({ maxLength: parseInt(e.target.value) })}
+              className="w-full border rounded px-3 py-2 mt-1"
+            />
+          </div>
         </div>
       )}
+
+      <div className="mt-4">
+        <label className="block text-sm font-medium text-gray-700">Conditional Logic (Optional)</label>
+        <select
+          value={question.dependsOn ? `${question.dependsOn.questionId}:${question.dependsOn.value}` : ''}
+          onChange={(e) => {
+            const [questionId, value] = e.target.value.split(':');
+            onUpdate({ dependsOn: e.target.value ? { questionId, value } : null });
+          }}
+          className="w-full border rounded px-3 py-2 mt-1"
+        >
+          <option value="">-- No Condition --</option>
+          {conditionalOptions.map(q =>
+            q.options.map(opt => (
+              <option key={`${q.id}:${opt}`} value={`${q.id}:${opt}`}>
+                Show if "{q.text}" is "{opt}"
+              </option>
+            ))
+          )}
+        </select>
+      </div>
     </div>
   );
-};
-
-// Export as default
-export default QuestionEditor;
+}

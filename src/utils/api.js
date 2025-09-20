@@ -4,21 +4,21 @@ import {
   updateJob as updateJobInDB,
   addJob as addJobToDB,
   updateCandidate as updateCandidateInDB,
-  addCandidate as addCandidateToDB, // Assuming you have this function in storage.js
+  addCandidate as addCandidateToDB,
   getAssessmentByJobId as getAssessmentFromDB,
   addAssessment as addAssessmentToDB,
   updateAssessment as updateAssessmentInDB,
   addAssessmentResponse as addAssessmentResponseToDB,
+  addTimelineEvent,
+  getTimelineEventsForCandidate,
+  getCandidate, 
+  getAllAssessmentResponses as getAllAssessmentResponsesFromDB,
 } from "./storage";
 
 // --- Private Helper Function for API Calls ---
 const apiClient = async (endpoint, options = {}) => {
-  // Simulate network delay and a 10% chance of a random network error
   const delay = Math.floor(Math.random() * 800) + 200;
   await new Promise((resolve) => setTimeout(resolve, delay));
-  if (Math.random() < 0.1) {
-    throw new Error("A network error occurred. Please try again.");
-  }
 
   const response = await fetch(endpoint, {
     headers: { "Content-Type": "application/json" },
@@ -30,11 +30,10 @@ const apiClient = async (endpoint, options = {}) => {
     throw new Error(errorInfo.error || "API request failed");
   }
 
-  // Handle responses with no content, like a successful DELETE request
   if (response.status === 204) {
     return null;
   }
-  
+
   return response.json();
 };
 
@@ -52,7 +51,6 @@ export const createJob = async (jobData) => {
     method: "POST",
     body: JSON.stringify(jobData),
   });
-  // The server now consistently returns { job: ... }
   await addJobToDB(newJobResponse.job);
   return newJobResponse.job;
 };
@@ -69,14 +67,10 @@ export const updateJob = async (id, updates) => {
   }
 
   const data = await response.json();
-  
-  // ✅ FIX: The function was incorrectly named 'updateJobInStorage'
-  // It has been corrected to 'updateJobInDB' to match the import.
   await updateJobInDB(data.job);
-  
+
   return data;
 };
-
 
 export const reorderJob = async (id, orderData) => {
   const response = await apiClient(`/api/jobs/${id}/reorder`, {
@@ -85,6 +79,12 @@ export const reorderJob = async (id, orderData) => {
   });
   await updateJobInDB(response.job);
   return response.job;
+};
+
+export const fetchJob = async (id) => {
+  const response = await apiClient(`/api/jobs/${id}`);
+  if (!response.ok) throw new Error('Job not found');
+  return response.json();
 };
 
 // ####################
@@ -96,11 +96,8 @@ export const fetchCandidates = async (params = {}) => {
   const response = await apiClient(`/api/candidates?${searchParams}`);
   const candidates = response.candidates || [];
 
-  // Keep the local IndexedDB in sync with the server data
   for (const candidate of candidates) {
     try {
-      // This will update the candidate if they exist, or add them if they don't.
-      // Assumes your storage function handles "upsert" logic.
       await updateCandidateInDB(candidate);
     } catch (e) {
       console.error(`Failed to sync candidate ${candidate.id}:`, e);
@@ -111,17 +108,29 @@ export const fetchCandidates = async (params = {}) => {
 };
 
 export const updateCandidateStage = async (id, stage) => {
+  const prevCandidate = await getCandidate(id); 
+
   const response = await apiClient(`/api/candidates/${id}`, {
     method: 'PATCH',
     body: JSON.stringify({ stage }),
   });
-  
-  // The response from the server is { candidate: { ... } }
+
   const updatedCandidate = response.candidate;
-  
-  // Pass the inner candidate object to the database function
+
+  const timelineEvent = {
+    id: `stage_change-${updatedCandidate.id}-${Date.now()}`,
+    type: 'stage_change',
+    candidateId: updatedCandidate.id,
+    date: new Date().toISOString(),
+    data: {
+      from: prevCandidate?.stage, 
+      to: updatedCandidate.stage,
+    }
+  };
+  await addTimelineEvent(timelineEvent);
+
   await updateCandidateInDB(updatedCandidate);
-  
+
   return updatedCandidate;
 };
 
@@ -129,19 +138,36 @@ export const updateCandidateStage = async (id, stage) => {
 // ## Assessments API
 // ####################
 
+// ✅ FIX: Export the getAllAssessmentResponses function from here
+export const getAllAssessmentResponses = () => {
+  // Since we don't have a backend route for this, we'll fetch from local storage
+  return getAllAssessmentResponsesFromDB();
+};
+
+export const fetchAllAssessments = () => {
+  return apiClient('/api/assessments');
+};
+
 export const fetchAssessment = async (jobId) => {
   try {
     const localAssessment = await getAssessmentFromDB(jobId);
-    if (localAssessment) return { assessment: localAssessment };
+    if (localAssessment) return localAssessment;
   } catch (e) {
-     console.warn("Could not fetch assessment from local DB, fetching from network.");
+    console.warn("Could not fetch assessment from local DB, fetching from network.");
   }
-
-  const data = await apiClient(`/api/assessments/${jobId}`);
-  if (data.assessment) {
-    await addAssessmentToDB(data.assessment);
+  try {
+    const data = await apiClient(`/api/assessments/${jobId}`);
+    if (data?.assessment) {
+      await addAssessmentToDB(data.assessment);
+      return data.assessment;
+    }
+  } catch (error) {
+    if (error.message.includes("API request failed")) {
+      return null;
+    }
+    throw error;
   }
-  return data;
+  return null;
 };
 
 export const saveAssessment = async (jobId, assessmentData) => {
@@ -161,12 +187,16 @@ export const submitAssessmentResponse = async (assessmentId, responses) => {
     submittedAt: new Date().toISOString(),
   };
 
-  // First, save the response to the local database for a fast UI
   await addAssessmentResponseToDB(responseData);
 
-  // Then, send it to the server
   return apiClient(`/api/assessments/${assessmentId}/submit`, {
     method: "POST",
     body: JSON.stringify(responses),
+  });
+};
+
+export const deleteAssessment = async (assessmentId) => {
+  return apiClient(`/assessments/${assessmentId}`, {
+    method: 'DELETE',
   });
 };

@@ -32,7 +32,7 @@ export default function JobForm({ initialData = {}, onSubmit, onCancel, isSaving
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto" style={{backgroundColor:"#D4F1F4"}}>
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         {isEditMode ? 'Edit Job Details' : 'Create New Job'}
       </h2>
