@@ -101,6 +101,25 @@ On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments t
 | date-fns   | ![date-fns](https://raw.githubusercontent.com/date-fns/date-fns/master/docs/logo.svg) |
 
 ---
+## 📸 Screenshots
+> Replace with your actual screenshots
+
+**Dashboard**  
+![Dashboard](<img width="1894" height="867" alt="Screenshot 2025-09-20 195750" src="https://github.com/user-attachments/assets/e0016ebe-17bf-4069-89d9-8a77e4e5d1c9" />
+)  
+
+**Job Board**  
+![Jobs](<img width="1894" height="866" alt="Screenshot 2025-09-20 195810" src="https://github.com/user-attachments/assets/47b24ef8-c9fa-4fde-87e9-28cae72631d8" />
+)  
+
+**Candidates**  
+![Candidates](<img width="1895" height="873" alt="Screenshot 2025-09-20 195828" src="https://github.com/user-attachments/assets/388e5634-dfc3-4773-b4af-90e37a4ad650" />
+)  
+
+**Assessments**  
+![Assessments](<img width="1916" height="868" alt="Screenshot 2025-09-20 195854" src="https://github.com/user-attachments/assets/0b9e8cd7-bff3-4405-a25f-eee9f251b99b" />
+)  
+
 
 ## 🔮 Future Improvements
 - **Backend Integration**: Replace MSW with a real REST API or GraphQL server.
