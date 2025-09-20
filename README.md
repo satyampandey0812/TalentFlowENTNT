@@ -105,21 +105,22 @@ On first run, the app seeds 25 jobs, 1,000 candidates, and several assessments t
 > Replace with your actual screenshots
 
 **Dashboard**  
-![Dashboard]
+
 <img width="1894" height="867" alt="Screenshot 2025-09-20 195750" src="https://github.com/user-attachments/assets/e1972302-5d59-4441-9126-48d1f0ea45d4" />
 
 
 **Job Board**  
-![Jobs]
+
 <img width="1894" height="866" alt="Screenshot 2025-09-20 195810" src="https://github.com/user-attachments/assets/f75bd68f-2a29-4399-8c5a-c7a71722a3f0" />
 
 
 **Candidates**  
-![Candidates]
+
 <img width="1895" height="873" alt="Screenshot 2025-09-20 195828" src="https://github.com/user-attachments/assets/722bba3e-47a8-48a6-b66f-0263271e2784" />
 
 
 **Assessments**  
+
 <img width="1916" height="868" alt="Screenshot 2025-09-20 195854" src="https://github.com/user-attachments/assets/fd4c5802-d65a-432f-986f-d7ca90d328da" />
 
 
