@@ -195,8 +195,8 @@ export const submitAssessmentResponse = async (assessmentId, responses) => {
   });
 };
 
-export const deleteAssessment = async (assessmentId) => {
-  return apiClient(`/assessments/${assessmentId}`, {
-    method: 'DELETE',
-  });
+export const deleteAssessment = async (id) => {
+  const res = await fetch(`/api/assessments/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete assessment');
+  return await res.json();
 };

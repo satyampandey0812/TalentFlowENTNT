@@ -408,6 +408,11 @@ export function makeServer({ environment = "development" } = {}) {
         }
         return { assessment: assessment.attrs };
       });
+this.delete('/assessments/:id', (schema, request) => {
+  let id = request.params.id;
+  schema.assessments.find(id)?.destroy();
+  return { success: true };
+});
     },
   });
   

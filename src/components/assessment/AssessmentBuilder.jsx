@@ -13,7 +13,7 @@ const QUESTION_TYPES = [
   { value: 'file', label: 'File Upload' },
 ];
 
-export default function AssessmentBuilder({ jobId, initialAssessment }) {
+export default function AssessmentBuilder({ jobId, initialAssessment, onCreated, onCancel }) {
   const [assessment, setAssessment] = useState(
     initialAssessment || {
       title: '',
@@ -109,8 +109,9 @@ export default function AssessmentBuilder({ jobId, initialAssessment }) {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await saveAssessment(jobId, assessment);
+      const saved = await saveAssessment(jobId, assessment);
       alert('Assessment saved successfully!');
+      if (onCreated) onCreated(saved); // <-- Notify parent
     } catch (error) {
       console.error('Failed to save assessment:', error);
       alert('Failed to save assessment. Please try again.');
